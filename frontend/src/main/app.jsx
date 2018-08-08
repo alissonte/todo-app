@@ -1,5 +1,6 @@
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../../node_modules/font-awesome/css/font-awesome.min.css'
+import '../template/custom.css'
 
 import React from 'react'
 import {BrowserRouter as Router } from 'react-router-dom';
