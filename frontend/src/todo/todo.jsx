@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
+import axios from 'axios'
+
 import PageHeader from '../template/pageHeader'
 import TodoForm from './todoForm'
 import TodoList from './todoList'
+
+const URL = 'http://localhost:3003/api/todos'
 
 export default class Todo extends Component{
 
@@ -10,6 +14,13 @@ export default class Todo extends Component{
         this.state = { description: '', list:[] }
         this.handleAdd = this.handleAdd.bind(this)
         this.handleChange = this.handleChange.bind(this)
+        this.handleRemove = this.handleRemove.bind(this)
+        this.refresh()
+    }
+
+    refresh(){
+        axios.get(`${URL}?sort=-createdAt`)
+        .then(resp => this.setState({ description:'', list: resp.data }))
     }
 
     handleChange(e){
@@ -17,7 +28,14 @@ export default class Todo extends Component{
     }
 
     handleAdd(){
-        console.log(this.state.description)
+        const description = this.state.description
+        axios.post(URL, { description })
+        .then(result => this.refresh())
+    }
+
+    handleRemove(todo){
+        axios.delete(`${URL}/${todo._id}`)
+        .then(resp => this.refresh())
     }
 
     render(){
@@ -25,7 +43,7 @@ export default class Todo extends Component{
             <div>
                 <PageHeader name='Tarefas' small='Cadastro'></PageHeader>
                 <TodoForm handleAdd={this.handleAdd} description={this.state.description} handleChange={this.handleChange}/>
-                <TodoList />
+                <TodoList list={this.state.list} handleRemove={this.handleRemove}/>
             </div>
         )
     }
